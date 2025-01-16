@@ -13,12 +13,12 @@ const Ingredients = () => {
         }
     })
 
-    console.log(ingridients);
+    // console.log(ingridients);
 
     return (
         <div>
             <p className="text-4xl text-center font-bold py-10">Our Main Ingredients</p>
-            <div className="">
+            <div className="pb-10">
                 <section className="text-gray-600 body-font">
                     <div className="container px-5 mx-auto">
 
