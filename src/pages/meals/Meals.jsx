@@ -2,11 +2,19 @@ import React, { useState } from 'react';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import MealIngredient from './mealComponents/MealIngredient';
+import MealCategory from './mealComponents/MealCategory';
+import MealArea from './mealComponents/MealArea';
 
 const Meals = () => {
 
-    const [searchMeal, setSearchMeal] = useState();
+    const [searchMeal, setSearchMeal] = useState([]);
     const [named, setNamed] = useState();
+
+    const [mealIngredient, setMealIngredient] = useState([]);
+    const [categoryMeal, setCategoryMeal]=useState([]);
+    const [areaMeal, setAreaMeal]=useState([]);
+
     const axiosPublic = useAxiosPublic();
     const { data: meals = [] } = useQuery({
         queryKey: ['meals'],
@@ -37,7 +45,38 @@ const Meals = () => {
         setNamed(result.data?.meals[0]);
     }
 
-    console.log(named);
+    const handleIngridentSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const ingredient = form.ingredient.value;
+        // console.log(ingredient);
+
+        const result = await axiosPublic.get(`/filter.php?i=${ingredient}`)
+        setMealIngredient(result.data?.meals);
+    }
+
+    const handleCategorySubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const category = form.category.value;
+        // console.log(ingredient);
+
+        const result = await axiosPublic.get(`/filter.php?c=${category}`)
+        setCategoryMeal(result.data?.meals);
+    }
+
+    const handleAreaSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const area = form.area.value;
+        // console.log(ingredient);
+
+        const result = await axiosPublic.get(`/filter.php?a=${area}`)
+        setAreaMeal(result.data?.meals);
+    }
+
+
+    // console.log(mealIngredient);
 
     return (
         <div className='py-10'>
@@ -74,9 +113,9 @@ const Meals = () => {
                 {
                     searchMeal ?
                         <div className="">
-                            <div className="font-bold">Your search result</div>
+                            <div className="font-bold text-center text-2xl">Your search result</div>
 
-                            <div className="flex flex-wrap rounded-lg p-5 border">
+                            <div className="flex flex-wrap rounded-lg p-5 ">
                                 {
                                     searchMeal?.map((item, index) =>
                                         <div key={index} className="lg:w-1/4 md:w-1/2 p-4 w-full hover:border hover:rounded-lg hover:shadow hover:shadow-blue-500 ">
@@ -103,6 +142,7 @@ const Meals = () => {
                 }
             </div>
 
+            {/* some of our meals  */}
             <div className="w-10/12 mx-auto">
                 <section className="text-gray-600 body-font">
                     <div className="container px-5  mx-auto">
@@ -218,6 +258,191 @@ const Meals = () => {
                             </div>
                         </div>
                     </> : <></>
+                }
+            </div>
+
+            <div className="Search by ingredient py-20">
+                <MealIngredient />
+
+                <div className=" py-10">
+                    <p className="text-center text-2xl font-bold">Search by Meal's ingreditents</p>
+                    <div className=" w-1/2 mx-auto py-10">
+                        <form action="" onSubmit={handleIngridentSubmit}>
+                            <div className="">
+                                <label className="input input-bordered flex items-center gap-2">
+                                    <input type="text" name='ingredient' className="grow" placeholder="Search by meal ingredient" />
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        className="h-4 w-4 opacity-70">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                            clipRule="evenodd" />
+                                    </svg>
+                                </label>
+
+                            </div>
+                            <div className="flex justify-center py-3">
+                                <button className='bg-blue-500 text-white p-3 rounded-md'>Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {
+                    mealIngredient ? <>
+                        <div className='w-10/12 mx-auto'>
+                            <p className="text-4xl text-center font-bold py-10">Your Search Result</p>
+                            <div className="flex flex-wrap -m-4">
+                                {
+                                    mealIngredient?.map((item, index) =>
+                                        <div key={index} className="lg:w-1/4 md:w-1/2 p-4 w-full hover:border hover:rounded-lg hover:shadow hover:shadow-blue-500 ">
+                                            <Link to={`/details/${item.idMeal}`} className="block relative h-48 rounded overflow-hidden">
+                                                <img alt="ecommerce" className="object-cover object-center w-full h-full block border rounded-lg" src={item?.strMealThumb} />
+                                            </Link>
+                                            <div className="mt-4">
+                                                <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">{item?.idMeal}</h3>
+                                                <h2 className="text-gray-900 title-font text-lg font-medium">The {item.strMeal}</h2>
+                                                {/* <p className="mt-1 text-[12px]">{item?.strInstructions.slice(0, 150)}</p> */}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
+                            </div>
+                        </div>
+                    </> : <>
+                        <div className="w-1/3 mx-auto">
+                            No data found
+                            <img src="https://res.cloudinary.com/dramj404v/image/upload/v1737007422/Softvance/MealDB/e0frlhxli8okzv8kht3c.png" alt="" />
+                        </div>
+                    </>
+                }
+            </div>
+
+
+            <div className="Search by category py-20">
+                <MealCategory/>
+
+                <div className=" py-10">
+                    <p className="text-center text-2xl font-bold">Search by Meal's Category</p>
+                    <div className=" w-1/2 mx-auto py-10">
+                        <form action="" onSubmit={handleCategorySubmit}>
+                            <div className="">
+                                <label className="input input-bordered flex items-center gap-2">
+                                    <input type="text" name='category' className="grow" placeholder="Search by meal category" />
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        className="h-4 w-4 opacity-70">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                            clipRule="evenodd" />
+                                    </svg>
+                                </label>
+
+                            </div>
+                            <div className="flex justify-center py-3">
+                                <button className='bg-blue-500 text-white p-3 rounded-md'>Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {
+                    categoryMeal ? <>
+                        <div className='w-10/12 mx-auto'>
+                            <p className="text-4xl text-center font-bold py-10">Your Search Result</p>
+                            <div className="flex flex-wrap -m-4">
+                                {
+                                    categoryMeal?.map((item, index) =>
+                                        <div key={index} className="lg:w-1/4 md:w-1/2 p-4 w-full hover:border hover:rounded-lg hover:shadow hover:shadow-blue-500 ">
+                                            <Link to={`/details/${item.idMeal}`} className="block relative h-48 rounded overflow-hidden">
+                                                <img alt="ecommerce" className="object-cover object-center w-full h-full block border rounded-lg" src={item?.strMealThumb} />
+                                            </Link>
+                                            <div className="mt-4">
+                                                <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">{item?.idMeal}</h3>
+                                                <h2 className="text-gray-900 title-font text-lg font-medium">The {item.strMeal}</h2>
+                                                {/* <p className="mt-1 text-[12px]">{item?.strInstructions.slice(0, 150)}</p> */}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
+                            </div>
+                        </div>
+                    </> : <>
+                        <div className="w-1/3 mx-auto">
+                            No data found
+                            <img src="https://res.cloudinary.com/dramj404v/image/upload/v1737007422/Softvance/MealDB/e0frlhxli8okzv8kht3c.png" alt="" />
+                        </div>
+                    </>
+                }
+            </div>
+
+
+            <div className="Search by area py-20">
+                <MealArea/>
+
+                <div className=" py-10">
+                    <p className="text-center text-2xl font-bold">Search by Meal's Area</p>
+                    <div className=" w-1/2 mx-auto py-10">
+                        <form action="" onSubmit={handleAreaSubmit}>
+                            <div className="">
+                                <label className="input input-bordered flex items-center gap-2">
+                                    <input type="text" name='area' className="grow" placeholder="Search by area" />
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        className="h-4 w-4 opacity-70">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                            clipRule="evenodd" />
+                                    </svg>
+                                </label>
+
+                            </div>
+                            <div className="flex justify-center py-3">
+                                <button className='bg-blue-500 text-white p-3 rounded-md'>Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {
+                    categoryMeal ? <>
+                        <div className='w-10/12 mx-auto'>
+                            <p className="text-4xl text-center font-bold py-10">Your Search Result</p>
+                            <div className="flex flex-wrap -m-4">
+                                {
+                                    areaMeal?.map((item, index) =>
+                                        <div key={index} className="lg:w-1/4 md:w-1/2 p-4 w-full hover:border hover:rounded-lg hover:shadow hover:shadow-blue-500 ">
+                                            <Link to={`/details/${item.idMeal}`} className="block relative h-48 rounded overflow-hidden">
+                                                <img alt="ecommerce" className="object-cover object-center w-full h-full block border rounded-lg" src={item?.strMealThumb} />
+                                            </Link>
+                                            <div className="mt-4">
+                                                <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">{item?.idMeal}</h3>
+                                                <h2 className="text-gray-900 title-font text-lg font-medium">The {item.strMeal}</h2>
+                                                {/* <p className="mt-1 text-[12px]">{item?.strInstructions.slice(0, 150)}</p> */}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
+                            </div>
+                        </div>
+                    </> : <>
+                        <div className="w-1/3 mx-auto">
+                            No data found
+                            <img src="https://res.cloudinary.com/dramj404v/image/upload/v1737007422/Softvance/MealDB/e0frlhxli8okzv8kht3c.png" alt="" />
+                        </div>
+                    </>
                 }
             </div>
         </div>
