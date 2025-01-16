@@ -80,8 +80,8 @@ const Meals = () => {
 
     return (
         <div className='py-10'>
-            <p className="text-center text-4xl font-bold py-10">We have so many Meals</p>
-            <p className="text-center text-[12px]">Search by Meal's First letter</p>
+            <p className="text-center text-4xl font-bold ">We have so many Meals</p>
+            <p className="text-center text-xl py-3 ">Search by Meal's First letter</p>
 
             {/* Forms to search meals by first letter  */}
             <div className=" w-1/2 mx-auto py-10">
@@ -388,7 +388,7 @@ const Meals = () => {
             <div className="Search by area py-20">
                 <MealArea/>
 
-                <div className=" py-10">
+                <div className="">
                     <p className="text-center text-2xl font-bold">Search by Meal's Area</p>
                     <div className=" w-1/2 mx-auto py-10">
                         <form action="" onSubmit={handleAreaSubmit}>
