@@ -34,7 +34,7 @@ const MealCategory = () => {
                                         <div className="mt-4">
                                             <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">{item?.strCategory}</h3>
                                             <h2 className="text-gray-900 title-font text-lg font-medium">The {item.strCategory}</h2>
-                                            <p className="mt-1 text-[12px]">{item?.strCategoryDescription.slice(0, 150)}</p>
+                                            <p className="mt-1 text-[12px]">{item?.strCategoryDescription?.slice(0, 150)}</p>
                                         </div>
                                     </div>
                                 )

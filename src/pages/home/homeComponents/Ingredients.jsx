@@ -34,7 +34,7 @@ const Ingredients = () => {
                                             <h2 className="text-gray-900 text-[15px] title-font font-medium">{item?.strIngredient}</h2>
                                         </div>
                                         <div className="flex-grow">
-                                            <p className="text-[12px]">{item?.strDescription.slice(0, 150)}</p>
+                                            <p className="text-[12px]">{item?.strDescription?.slice(0, 150)}</p>
                                         </div>
                                     </div>
                                 </div>)
